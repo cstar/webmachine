@@ -46,8 +46,9 @@
 % @spec find_boundary(wrq:wm_reqdata()) -> boundary()
 find_boundary(ReqData) ->
     ContentType = wrq:get_req_header("content-type", ReqData),
-    string:substr(ContentType, string:str(ContentType, "boundary=") 
-                  + length("boundary=")).
+    {_,Props} = mochiweb_util:parse_header(ContentType),
+    {"boundary", Boundary} = lists:keyfind("boundary", 1, Props), 
+    Boundary.
 
 % @doc Turn a multipart form into component parts.
 % @spec get_all_parts(incoming_req_body(), boundary()) -> [fpart()]
